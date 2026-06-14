@@ -1,0 +1,1752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CyphrWeb — Build. Launch. Grow.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0A0E1A;
+    --panel: #121A2E;
+    --panel-2: #161F38;
+    --line: #232E4D;
+    --text: #E8ECF7;
+    --muted: #7C89AD;
+    --green: #9FE870;
+    --violet: #7C5CFC;
+    --cyan: #4FD1E8;
+    --amber: #FFC857;
+    --red: #FF6B6B;
+    --mono: "JetBrains Mono", monospace;
+    --sans: "Inter", sans-serif;
+  }
+
+  *{ margin:0; padding:0; box-sizing:border-box; }
+
+  html{ scroll-behavior:smooth; }
+
+  body{
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  body::before{
+    content:"";
+    position:fixed; inset:0;
+    background-image:
+      linear-gradient(rgba(124,92,252,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(124,92,252,0.05) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events:none;
+    z-index:0;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(0,0,0,0.6), transparent);
+  }
+
+  a{ color:inherit; }
+
+  /* ---------- Layout helpers ---------- */
+  .wrap{ max-width:1140px; margin:0 auto; padding:0 24px; position:relative; z-index:1; }
+  section{ padding: 96px 0; position:relative; z-index:1; }
+  .eyebrow{
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--green);
+    display:flex; align-items:center; gap:10px;
+    margin-bottom: 16px;
+  }
+  .eyebrow::before{
+    content:"";
+    width:8px; height:8px;
+    background: var(--green);
+    border-radius:50%;
+    box-shadow: 0 0 0 4px rgba(159,232,112,0.15);
+  }
+  h1,h2,h3{ font-family: var(--mono); font-weight:800; letter-spacing:-0.01em; }
+  .section-title{ font-size: clamp(28px, 4vw, 42px); margin-bottom: 12px; }
+  .section-sub{ color: var(--muted); max-width:620px; font-size:15px; margin-bottom:48px; }
+
+  /* ---------- Top nav ---------- */
+  header{
+    position: sticky; top:0; z-index:50;
+    background: rgba(10,14,26,0.78);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  nav{
+    max-width:1140px; margin:0 auto; padding: 16px 24px;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .logo{
+    font-family: var(--mono); font-weight:800; font-size:18px;
+    display:flex; align-items:center; gap:8px;
+    letter-spacing:0.02em;
+  }
+  .logo span{ color: var(--green); }
+  .logo-bracket{ color: var(--violet); }
+  .nav-links{ display:flex; gap:28px; font-size:14px; font-weight:500; }
+  .nav-links a{
+    text-decoration:none; color: var(--muted);
+    transition: color .2s;
+    position:relative;
+  }
+  .nav-links a:hover, .nav-links a:focus-visible{ color: var(--text); }
+  .nav-links a::after{
+    content:""; position:absolute; left:0; bottom:-6px;
+    width:0; height:2px; background: var(--green);
+    transition: width .25s;
+  }
+  .nav-links a:hover::after{ width:100%; }
+  .nav-toggle{ display:none; }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    padding-top: 80px;
+    padding-bottom: 60px;
+  }
+  .hero-grid{
+    display:grid; grid-template-columns: 1.1fr 1fr; gap:48px; align-items:center;
+  }
+  .hero h1{
+    font-size: clamp(36px, 6vw, 64px);
+    line-height:1.05;
+    margin-bottom:20px;
+  }
+  .hero h1 .accent{ color: var(--green); }
+  .hero p.lead{
+    color: var(--muted); font-size:17px; max-width:480px; margin-bottom:32px;
+  }
+  .cta-row{ display:flex; gap:14px; flex-wrap:wrap; }
+  .btn{
+    font-family: var(--mono); font-weight:700; font-size:13px;
+    letter-spacing:0.05em; text-transform:uppercase;
+    padding: 14px 26px; border-radius:6px;
+    text-decoration:none; display:inline-flex; align-items:center; gap:10px;
+    border:1px solid transparent; cursor:pointer;
+    transition: transform .15s, box-shadow .2s, background .2s, color .2s;
+  }
+  .btn-primary{ background: var(--green); color:#0A0E1A; }
+  .btn-primary:hover{ transform: translateY(-2px); box-shadow:0 8px 24px rgba(159,232,112,0.25); }
+  .btn-ghost{ border-color: var(--line); color: var(--text); }
+  .btn-ghost:hover{ border-color: var(--violet); color: var(--violet); transform: translateY(-2px); }
+
+  /* Terminal card */
+  .terminal{
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    overflow:hidden;
+    box-shadow: 0 24px 60px -20px rgba(0,0,0,0.6);
+  }
+  .terminal-bar{
+    display:flex; align-items:center; gap:8px;
+    padding: 12px 16px;
+    background: var(--panel-2);
+    border-bottom: 1px solid var(--line);
+  }
+  .terminal-dot{ width:11px; height:11px; border-radius:50%; }
+  .terminal-bar .terminal-dot:nth-child(1){ background:#FF6B6B; }
+  .terminal-bar .terminal-dot:nth-child(2){ background:#FFC857; }
+  .terminal-bar .terminal-dot:nth-child(3){ background:#9FE870; }
+  .terminal-title{
+    margin-left:8px; font-family: var(--mono); font-size:12px; color: var(--muted);
+  }
+  .terminal-body{
+    padding: 24px; font-family: var(--mono); font-size:14px; line-height:1.85;
+    white-space:pre-wrap;
+  }
+  .terminal-body .kw{ color: var(--violet); }
+  .terminal-body .fn{ color: var(--cyan); }
+  .terminal-body .str{ color: var(--green); }
+  .terminal-body .cmt{ color: var(--muted); }
+  .cursor{
+    display:inline-block; width:8px; height:16px; background: var(--green);
+    margin-left:2px; vertical-align:-2px;
+    animation: blink 1s steps(1) infinite;
+  }
+  @keyframes blink{ 50%{ opacity:0; } }
+
+  /* ---------- Tab switcher ---------- */
+  .tabs{
+    display:flex; gap:8px; border:1px solid var(--line); border-radius:8px;
+    padding:6px; background: var(--panel); width: fit-content; margin: 0 auto 56px;
+  }
+  .tab-btn{
+    font-family: var(--mono); font-size:13px; font-weight:700; letter-spacing:0.04em;
+    text-transform:uppercase;
+    padding: 12px 24px; border-radius:6px; border:none; background:transparent;
+    color: var(--muted); cursor:pointer; transition: all .2s;
+  }
+  .tab-btn.active{ background: var(--violet); color:#fff; }
+  .tab-btn:not(.active):hover{ color: var(--text); }
+
+  .tab-panel{ display:none; }
+  .tab-panel.active{ display:block; animation: fadeIn .4s ease; }
+  @keyframes fadeIn{ from{ opacity:0; transform:translateY(8px); } to{ opacity:1; transform:translateY(0); } }
+
+  /* ---------- Cards / grids ---------- */
+  .grid{ display:grid; gap:20px; }
+  .grid-2{ grid-template-columns: repeat(2, 1fr); }
+  .grid-3{ grid-template-columns: repeat(3, 1fr); }
+  .grid-4{ grid-template-columns: repeat(4, 1fr); }
+
+  .card{
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 24px;
+    transition: border-color .2s, transform .2s;
+  }
+  .card:hover{ border-color: var(--violet); transform: translateY(-3px); }
+
+  .card .icon{
+    width:42px; height:42px; border-radius:8px;
+    display:flex; align-items:center; justify-content:center;
+    background: rgba(124,92,252,0.12);
+    color: var(--violet);
+    margin-bottom:16px; font-size:20px;
+  }
+  .card h3{ font-size:16px; margin-bottom:8px; font-family: var(--sans); font-weight:700; }
+  .card p{ color: var(--muted); font-size:14px; }
+
+  /* ---------- Points table ---------- */
+  .points-table{
+    width:100%; border-collapse:collapse;
+    background: var(--panel); border:1px solid var(--line); border-radius:10px;
+    overflow:hidden; font-size:14px;
+  }
+  .points-table th, .points-table td{
+    padding:14px 18px; text-align:left; border-bottom:1px solid var(--line);
+  }
+  .points-table th{
+    font-family: var(--mono); font-size:12px; letter-spacing:0.08em; text-transform:uppercase;
+    color: var(--muted); background: var(--panel-2);
+  }
+  .points-table td.pts{
+    font-family: var(--mono); font-weight:700; color: var(--green); white-space:nowrap;
+  }
+  .points-table td.neg{ color: var(--red); }
+  .points-table tr:last-child td{ border-bottom:none; }
+  .table-wrap{
+    overflow-x:auto; margin-bottom: 28px; border-radius:10px;
+  }
+  .table-label{
+    font-family: var(--mono); font-size:13px; color: var(--cyan);
+    text-transform:uppercase; letter-spacing:0.08em; margin: 36px 0 14px;
+  }
+  .table-label:first-of-type{ margin-top:0; }
+
+  /* ---------- Process timeline ---------- */
+  .timeline{
+    display:flex; flex-wrap:wrap; gap:16px; justify-content:space-between;
+    counter-reset: step;
+  }
+  .timeline-step{
+    flex: 1 1 150px;
+    background: var(--panel); border:1px solid var(--line); border-radius:10px;
+    padding:20px; position:relative; text-align:center;
+  }
+  .timeline-step .num{
+    font-family: var(--mono); font-weight:800; font-size:13px;
+    width:32px; height:32px; border-radius:50%;
+    background: var(--violet); color:#fff;
+    display:flex; align-items:center; justify-content:center;
+    margin: 0 auto 12px;
+  }
+  .timeline-step h4{ font-size:14px; font-weight:700; }
+  .timeline-note{
+    text-align:center; color: var(--muted); font-size:13px; margin-top:24px; font-style:italic;
+  }
+
+  /* ---------- Roles ---------- */
+  .role-card{
+    background: var(--panel); border:1px solid var(--line); border-radius:12px;
+    padding:28px; text-align:center;
+  }
+  .role-card.featured{ border-color: var(--green); box-shadow: 0 0 0 1px var(--green), 0 20px 50px -20px rgba(159,232,112,0.25); }
+  .role-avatar{
+    width:64px; height:64px; border-radius:50%; margin: 0 auto 16px;
+    display:flex; align-items:center; justify-content:center; font-size:26px;
+  }
+  .role-card.role-sandesh .role-avatar{ background: rgba(159,232,112,0.15); color: var(--green); }
+  .role-card.role-candidate .role-avatar{ background: rgba(124,92,252,0.18); color: var(--violet); }
+  .role-card.role-tejas .role-avatar{ background: rgba(255,107,107,0.15); color: var(--red); }
+  .role-card h3{ font-size:18px; font-family: var(--sans); font-weight:800; }
+  .role-card .role-tag{
+    font-family: var(--mono); font-size:11px; color: var(--muted);
+    text-transform:uppercase; letter-spacing:0.1em; margin: 6px 0 18px;
+  }
+  .role-card ul{ list-style:none; text-align:left; }
+  .role-card li{
+    font-size:13.5px; color: var(--muted); padding:6px 0 6px 20px; position:relative;
+  }
+  .role-card li::before{
+    content:"▸"; position:absolute; left:0; color: var(--violet);
+  }
+
+  /* ---------- Evaluation categories ---------- */
+  .eval-list{ display:flex; flex-direction:column; gap:10px; }
+  .eval-row{
+    display:flex; align-items:center; gap:16px;
+    background: var(--panel); border:1px solid var(--line); border-radius:8px;
+    padding: 14px 18px;
+  }
+  .eval-row .bar-bg{
+    flex:1; height:8px; background: var(--line); border-radius:4px; overflow:hidden;
+  }
+  .eval-row .bar-fill{ height:100%; background: linear-gradient(90deg, var(--violet), var(--cyan)); border-radius:4px; }
+  .eval-row .name{ flex: 0 0 220px; font-size:13.5px; font-weight:600; }
+  .eval-row .val{
+    font-family: var(--mono); font-size:13px; color: var(--green); flex:0 0 50px; text-align:right;
+  }
+
+  /* ---------- Tags / chips ---------- */
+  .chip-row{ display:flex; flex-wrap:wrap; gap:10px; }
+  .chip{
+    font-family: var(--mono); font-size:13px; padding:10px 16px;
+    border:1px solid var(--line); border-radius:999px; color: var(--text);
+    background: var(--panel);
+  }
+
+  /* ---------- Hackathon specific ---------- */
+  .hack-hero{
+    background: linear-gradient(135deg, rgba(124,92,252,0.18), rgba(79,209,232,0.08));
+    border:1px solid var(--line); border-radius:14px; padding: 40px;
+    margin-bottom:48px; position:relative; overflow:hidden;
+  }
+  .hack-hero::after{
+    content:"BUILD.LAUNCH.GROW."; position:absolute; right:-10px; bottom:-30px;
+    font-family: var(--mono); font-weight:800; font-size:64px; color: rgba(255,255,255,0.03);
+    letter-spacing:0.05em; white-space:nowrap;
+  }
+  .hack-hero h2{ font-size: clamp(28px, 5vw, 48px); margin-bottom:12px; }
+  .hack-hero h2 .hl{ color: var(--green); }
+  .hack-hero p{ color: var(--muted); max-width:560px; margin-bottom:24px; }
+  .hack-badges{ display:flex; gap:10px; flex-wrap:wrap; }
+  .badge{
+    font-family: var(--mono); font-size:12px; font-weight:700; letter-spacing:0.06em;
+    padding:8px 14px; border-radius:6px; text-transform:uppercase;
+  }
+  .badge.green{ background: rgba(159,232,112,0.15); color: var(--green); }
+  .badge.red{ background: rgba(255,107,107,0.15); color: var(--red); }
+  .badge.amber{ background: rgba(255,200,87,0.15); color: var(--amber); }
+
+  .stat-row{ display:flex; gap:16px; flex-wrap:wrap; margin-top:24px; }
+  .stat{
+    background: var(--panel-2); border:1px solid var(--line); border-radius:8px;
+    padding:16px 20px; min-width:140px;
+  }
+  .stat .num{ font-family: var(--mono); font-size:24px; font-weight:800; color: var(--green); }
+  .stat .lbl{ font-size:12px; color: var(--muted); margin-top:4px; }
+
+  /* Countdown */
+  .countdown{
+    display:flex; gap:14px; margin: 32px 0; flex-wrap:wrap;
+  }
+  .countdown .unit{
+    background: var(--panel); border:1px solid var(--line); border-radius:10px;
+    padding: 18px 22px; text-align:center; min-width:90px;
+  }
+  .countdown .unit .num{
+    font-family: var(--mono); font-size:32px; font-weight:800; color: var(--cyan);
+  }
+  .countdown .unit .lbl{
+    font-size:11px; color: var(--muted); text-transform:uppercase; letter-spacing:0.1em; margin-top:6px;
+  }
+
+  /* timeline 2 */
+  .hack-timeline{ display:flex; flex-direction:column; gap:0; }
+  .hack-timeline-item{
+    display:grid; grid-template-columns: 140px 24px 1fr; gap:0; align-items:start;
+    padding: 18px 0;
+  }
+  .hack-timeline-item .date{
+    font-family: var(--mono); font-size:13px; color: var(--cyan); font-weight:700;
+  }
+  .hack-timeline-item .dot-col{ display:flex; flex-direction:column; align-items:center; height:100%; }
+  .hack-timeline-item .dot{
+    width:14px; height:14px; border-radius:50%; background: var(--violet);
+    box-shadow: 0 0 0 4px rgba(124,92,252,0.15); margin-top:4px; flex-shrink:0;
+  }
+  .hack-timeline-item .line{
+    flex:1; width:2px; background: var(--line); margin-top:4px;
+  }
+  .hack-timeline-item:last-child .line{ display:none; }
+  .hack-timeline-item .content h4{ font-size:15px; font-weight:700; margin-bottom:4px; }
+  .hack-timeline-item .content p{ color: var(--muted); font-size:13px; }
+
+  /* Contact */
+  .contact-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:16px; }
+  .contact-card{
+    background: var(--panel); border:1px solid var(--line); border-radius:10px;
+    padding:20px; display:flex; align-items:center; gap:16px;
+  }
+  .contact-card .icon{
+    width:44px; height:44px; border-radius:50%; background: rgba(159,232,112,0.12);
+    color: var(--green); display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0;
+  }
+  .contact-card .name{ font-weight:700; font-size:14px; }
+  .contact-card .num{ font-family: var(--mono); font-size:13px; color: var(--muted); }
+
+  /* Register CTA */
+  .register-cta{
+    text-align:center; background: var(--panel); border:1px solid var(--line);
+    border-radius:14px; padding:48px 24px; margin-top:48px;
+  }
+  .register-cta h3{ font-size: clamp(24px,4vw,34px); margin-bottom:12px; }
+  .register-cta p{ color: var(--muted); margin-bottom:28px; }
+
+  /* Footer */
+  footer{
+    border-top:1px solid var(--line); padding:40px 0; text-align:center;
+    color: var(--muted); font-size:13px;
+  }
+  footer .logo{ justify-content:center; margin-bottom:12px; }
+
+  /* Apply form (#apply) */
+  .apply-card{
+    background: var(--panel); border:1px solid var(--line); border-radius:12px; padding:32px;
+    max-width:560px; margin: 0 auto;
+  }
+  .form-row{ margin-bottom:18px; }
+  .form-row label{
+    display:block; font-family: var(--mono); font-size:12px; letter-spacing:0.08em;
+    text-transform:uppercase; color: var(--muted); margin-bottom:8px;
+  }
+  .form-row input, .form-row select, .form-row textarea{
+    width:100%; background: var(--panel-2); border:1px solid var(--line); border-radius:6px;
+    padding:12px 14px; color: var(--text); font-family: var(--sans); font-size:14px;
+    transition: border-color .2s;
+  }
+  .form-row input:focus, .form-row select:focus, .form-row textarea:focus{
+    outline:none; border-color: var(--violet);
+  }
+  .form-row textarea{ resize:vertical; min-height:90px; }
+  .form-msg{
+    margin-top:16px; font-family: var(--mono); font-size:13px; color: var(--green);
+    display:none;
+  }
+  .form-msg.show{ display:block; animation: fadeIn .3s ease; }
+
+  /* Scroll reveal */
+  .reveal{ opacity:0; transform: translateY(24px); transition: opacity .6s ease, transform .6s ease; }
+  .reveal.visible{ opacity:1; transform:translateY(0); }
+
+  /* ---------- Eval Detail Cards ---------- */
+  .eval-detail-grid{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin: 48px 0 40px;
+  }
+  .eval-detail-card{
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform .2s, box-shadow .2s;
+    border-top: 3px solid var(--accent, var(--violet));
+  }
+  .eval-detail-card:hover{
+    transform: translateY(-3px);
+    box-shadow: 0 12px 32px -10px rgba(0,0,0,0.4);
+  }
+  .edc-header{
+    display: flex; align-items: center; gap: 12px;
+    padding: 16px 16px 12px;
+    background: var(--panel-2);
+    border-bottom: 1px solid var(--line);
+  }
+  .edc-num{
+    width: 30px; height: 30px; border-radius: 50%;
+    background: var(--accent, var(--violet));
+    color: #0A0E1A; font-family: var(--mono); font-weight: 800; font-size: 13px;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .edc-title{ font-weight: 700; font-size: 13.5px; line-height: 1.3; }
+  .edc-total{
+    font-family: var(--mono); font-size: 11px; color: var(--accent, var(--violet));
+    font-weight: 700; margin-top: 2px;
+  }
+  .edc-icon{
+    margin-left: auto; font-size: 20px; opacity: 0.85; flex-shrink: 0;
+  }
+  .edc-rows{ padding: 10px 16px 14px; display: flex; flex-direction: column; gap: 6px; }
+  .edc-row{
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    font-size: 13px; color: var(--muted); padding: 5px 0;
+    border-bottom: 1px solid rgba(35,46,77,0.5);
+  }
+  .edc-row:last-child{ border-bottom: none; }
+  .edc-row-note{ color: var(--muted); font-size: 12px; font-style: italic; justify-content: flex-start; }
+  .edc-pts{
+    font-family: var(--mono); font-weight: 800; font-size: 14px;
+    color: var(--text); background: rgba(255,255,255,0.05);
+    padding: 2px 8px; border-radius: 4px; white-space: nowrap; flex-shrink: 0;
+  }
+  .edc-tag{
+    font-family: var(--mono); font-size: 10px; font-weight: 700;
+    padding: 2px 6px; border-radius: 4px; background: rgba(159,232,112,0.15);
+    color: var(--green); text-transform: uppercase; letter-spacing: 0.04em;
+    margin-left: 4px;
+  }
+  .edc-tag.red{ background: rgba(255,107,107,0.15); color: var(--red); }
+
+  /* Eval summary row */
+  .eval-summary-row{
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-top: 32px;
+  }
+  .eval-summary-box{
+    border-radius: 10px; padding: 20px; border: 1px solid var(--line);
+  }
+  .eval-summary-box.green{ background: rgba(159,232,112,0.06); border-color: rgba(159,232,112,0.25); }
+  .eval-summary-box.red{ background: rgba(255,107,107,0.06); border-color: rgba(255,107,107,0.2); }
+  .eval-summary-box.violet{ background: rgba(124,92,252,0.07); border-color: rgba(124,92,252,0.25); }
+  .esb-title{
+    font-family: var(--mono); font-weight: 800; font-size: 13px; text-transform: uppercase;
+    letter-spacing: 0.06em; margin-bottom: 12px;
+  }
+  .eval-summary-box.green .esb-title{ color: var(--green); }
+  .eval-summary-box.red .esb-title{ color: var(--red); }
+  .eval-summary-box.violet .esb-title{ color: var(--violet); }
+  .esb-title span{ font-size: 11px; color: var(--muted); font-weight: 400; }
+  .esb-items > div{
+    display: flex; justify-content: space-between;
+    font-size: 13px; color: var(--muted); padding: 5px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .esb-items > div:last-child{ border-bottom: none; }
+  .eval-summary-box.green .esb-items > div span:last-child{ color: var(--green); font-family: var(--mono); font-weight: 700; }
+  .eval-summary-box.red .esb-items > div span:last-child{ color: var(--red); font-family: var(--mono); font-weight: 700; }
+  .esb-note{ font-size: 14px; color: var(--muted); line-height: 1.6; }
+  .esb-note strong{ color: var(--text); }
+
+  @media (max-width: 900px){
+    .eval-detail-grid{ grid-template-columns: repeat(2, 1fr); }
+    .eval-summary-row{ grid-template-columns: 1fr; }
+  }
+  @media (max-width: 640px){
+    .eval-detail-grid{ grid-template-columns: 1fr; }
+  }
+
+
+  .dash-stats{ display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:32px; }
+  .dash-stat{
+    background: var(--panel); border:1px solid var(--line); border-radius:10px;
+    padding:20px; text-align:center;
+  }
+  .dash-stat .num{ font-family: var(--mono); font-size:28px; font-weight:800; color: var(--cyan); }
+  .dash-stat .lbl{ font-size:12px; color: var(--muted); margin-top:6px; text-transform:uppercase; letter-spacing:0.08em; }
+  .dash-stat.highlight .num{ color: var(--green); }
+
+  .dash-toolbar{
+    display:flex; gap:12px; flex-wrap:wrap; align-items:center; margin-bottom:24px;
+  }
+  .dash-toolbar input[type="text"], .dash-toolbar select{
+    background: var(--panel); border:1px solid var(--line); border-radius:6px;
+    padding:11px 14px; color: var(--text); font-family: var(--sans); font-size:14px;
+  }
+  .dash-toolbar input[type="text"]{ flex:1; min-width:180px; }
+  .dash-toolbar input:focus, .dash-toolbar select:focus{ outline:none; border-color: var(--violet); }
+  .btn-sm{
+    font-family: var(--mono); font-size:12px; font-weight:700; letter-spacing:0.04em;
+    padding:9px 16px; border-radius:6px; border:1px solid var(--line); background: var(--panel-2);
+    color: var(--text); cursor:pointer; transition: all .2s; text-transform:uppercase;
+  }
+  .btn-sm:hover{ border-color: var(--violet); color: var(--violet); }
+
+  /* Leaderboard */
+  .leaderboard{ display:flex; flex-direction:column; gap:10px; margin-bottom:40px; }
+  .lb-row{
+    display:grid; grid-template-columns: 48px 1fr auto; align-items:center; gap:16px;
+    background: var(--panel); border:1px solid var(--line); border-radius:10px;
+    padding:14px 18px; transition: transform .2s, border-color .2s;
+  }
+  .lb-row:hover{ transform: translateX(4px); border-color: var(--violet); }
+  .lb-row.rank-1{ border-color: var(--green); box-shadow: 0 0 0 1px var(--green); }
+  .lb-row.rank-2{ border-color: var(--cyan); }
+  .lb-row.rank-3{ border-color: var(--amber); }
+  .lb-rank{
+    font-family: var(--mono); font-weight:800; font-size:18px; text-align:center;
+    color: var(--muted);
+  }
+  .lb-row.rank-1 .lb-rank{ color: var(--green); }
+  .lb-row.rank-2 .lb-rank{ color: var(--cyan); }
+  .lb-row.rank-3 .lb-rank{ color: var(--amber); }
+  .lb-info .lb-title{ font-weight:700; font-size:15px; }
+  .lb-info .lb-sub{ font-size:12px; color: var(--muted); margin-top:2px; }
+  .lb-score{
+    font-family: var(--mono); font-weight:800; font-size:20px; color: var(--green);
+    text-align:right; white-space:nowrap;
+  }
+  .lb-score .lb-score-lbl{ display:block; font-size:10px; color: var(--muted); font-weight:400; text-transform:uppercase; letter-spacing:0.08em; }
+
+  /* Data table */
+  .data-table-wrap{ overflow-x:auto; border-radius:10px; border:1px solid var(--line); }
+  .data-table{ width:100%; border-collapse:collapse; background: var(--panel); font-size:13.5px; min-width:760px; }
+  .data-table th, .data-table td{ padding:14px 16px; text-align:left; border-bottom:1px solid var(--line); white-space:nowrap; }
+  .data-table th{
+    font-family: var(--mono); font-size:11px; letter-spacing:0.08em; text-transform:uppercase;
+    color: var(--muted); background: var(--panel-2); position:sticky; top:0;
+  }
+  .data-table tbody tr:hover{ background: var(--panel-2); }
+  .data-table tbody tr:last-child td{ border-bottom:none; }
+  .data-table td.score-cell{ font-family: var(--mono); font-weight:800; color: var(--green); }
+  .data-table td.wrap-cell{ white-space:normal; max-width:220px; }
+
+  .status-pill{
+    font-family: var(--mono); font-size:11px; font-weight:700; padding:5px 12px;
+    border-radius:999px; text-transform:uppercase; letter-spacing:0.04em; display:inline-block;
+  }
+  .status-pill.selected{ background: rgba(159,232,112,0.15); color: var(--green); }
+  .status-pill.shortlisted{ background: rgba(255,200,87,0.15); color: var(--amber); }
+  .status-pill.rejected{ background: rgba(255,107,107,0.15); color: var(--red); }
+  .status-pill.review{ background: rgba(124,92,252,0.15); color: var(--violet); }
+
+  .edit-btn{
+    font-family: var(--mono); font-size:11px; font-weight:700; padding:6px 12px;
+    border-radius:6px; border:1px solid var(--line); background:transparent; color: var(--cyan);
+    cursor:pointer; transition: all .2s; text-transform:uppercase;
+  }
+  .edit-btn:hover{ border-color: var(--cyan); background: rgba(79,209,232,0.08); }
+
+  .empty-state{
+    text-align:center; padding:48px 24px; color: var(--muted); font-size:14px;
+    border:1px dashed var(--line); border-radius:10px;
+  }
+
+  /* Modal */
+  .modal-overlay{
+    position:fixed; inset:0; background: rgba(5,8,16,0.7); backdrop-filter: blur(4px);
+    display:none; align-items:center; justify-content:center; z-index:100; padding:20px;
+  }
+  .modal-overlay.open{ display:flex; }
+  .modal{
+    background: var(--panel); border:1px solid var(--line); border-radius:12px;
+    padding:28px; max-width:480px; width:100%; max-height:88vh; overflow-y:auto;
+    animation: fadeIn .25s ease;
+  }
+  .modal h3{ font-size:18px; font-family: var(--sans); font-weight:800; margin-bottom:20px; }
+  .modal .form-row label{
+    display:block; font-family: var(--mono); font-size:11px; letter-spacing:0.08em;
+    text-transform:uppercase; color: var(--muted); margin-bottom:6px;
+  }
+  .modal .form-row input, .modal .form-row select, .modal .form-row textarea{
+    width:100%; background: var(--panel-2); border:1px solid var(--line); border-radius:6px;
+    padding:10px 12px; color: var(--text); font-family: var(--sans); font-size:13.5px;
+  }
+  .modal .form-row input:focus, .modal .form-row select:focus, .modal .form-row textarea:focus{
+    outline:none; border-color: var(--violet);
+  }
+  .modal .form-row{ margin-bottom:14px; }
+  .modal-actions{ display:flex; gap:10px; margin-top:20px; }
+  .modal-actions .btn-sm{ flex:1; text-align:center; padding:11px; }
+  .modal-actions .btn-save{ background: var(--green); color:#0A0E1A; border-color: var(--green); }
+  .modal-close{
+    position:absolute; top:18px; right:18px; background:none; border:none; color: var(--muted);
+    font-size:20px; cursor:pointer; line-height:1;
+  }
+  .modal{ position:relative; }
+
+
+  @media (max-width: 900px){
+    .hero-grid{ grid-template-columns:1fr; }
+    .grid-2, .grid-3, .grid-4{ grid-template-columns: repeat(2,1fr); }
+    .contact-grid{ grid-template-columns:1fr; }
+  }
+  @media (max-width: 640px){
+    .nav-links{
+      position:absolute; top:100%; left:0; right:0;
+      background: var(--bg); border-bottom:1px solid var(--line);
+      flex-direction:column; padding:16px 24px; gap:16px;
+      display:none;
+    }
+    .nav-links.open{ display:flex; }
+    .nav-toggle{
+      display:block; background:none; border:none; color: var(--text); font-size:22px; cursor:pointer;
+    }
+    .grid-2, .grid-3, .grid-4{ grid-template-columns: 1fr; }
+    section{ padding: 64px 0; }
+    .eval-row .name{ flex-basis:130px; font-size:12px; }
+    .hack-timeline-item{ grid-template-columns: 96px 20px 1fr; }
+    .tabs{ width:100%; }
+    .tab-btn{ flex:1; padding:12px 8px; font-size:11px; }
+    .dash-stats{ grid-template-columns: repeat(2,1fr); }
+    .lb-row{ grid-template-columns: 36px 1fr auto; padding:12px; }
+    .lb-info .lb-title{ font-size:13.5px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <div class="logo"><span class="logo-bracket">&lt;/&gt;</span> CYPHR<span>WEB</span></div>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">☰</button>
+    <div class="nav-links" id="navLinks">
+      <a href="#cofounder">Co-Founder Program</a>
+      <a href="#hackathon">Hackathon 2026</a>
+      <a href="#cf-dashboard">CF Dashboard</a>
+      <a href="#hack-dashboard">Hackathon Dashboard</a>
+      <a href="#apply">Apply</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </nav>
+</header>
+
+<!-- ================= HERO ================= -->
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="eyebrow">cyphrweb.github.io</div>
+      <h1>Build like a <span class="accent">real startup</span> developer.</h1>
+      <p class="lead">CyphrWeb runs two tracks: a co-founder selection process for people who want to lead, and an open hackathon for anyone who wants to ship. Pick your path below.</p>
+      <div class="cta-row">
+        <a href="#cofounder" class="btn btn-primary">Co-Founder Program →</a>
+        <a href="#hackathon" class="btn btn-ghost">Hackathon 2026 →</a>
+      </div>
+    </div>
+    <div class="terminal">
+      <div class="terminal-bar">
+        <div class="terminal-dot"></div><div class="terminal-dot"></div><div class="terminal-dot"></div>
+        <div class="terminal-title">cyphrweb.js</div>
+      </div>
+      <div class="terminal-body" id="terminalBody"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TAB SWITCH ANCHOR ================= -->
+<div class="wrap" style="padding-top:8px;">
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="cofounder">Co-Founder Program</button>
+    <button class="tab-btn" data-tab="hackathon">Hackathon 2026</button>
+  </div>
+</div>
+
+<!-- ================= CO-FOUNDER PROGRAM ================= -->
+<div class="tab-panel active" id="cofounder">
+
+<section id="cofounder-intro" style="padding-top:0;">
+  <div class="wrap">
+    <div class="eyebrow">co-founder selection</div>
+    <h2 class="section-title">We're looking for <span style="color:var(--green)">1 co-founder.</span></h2>
+    <p class="section-sub">This isn't a job application — it's a process to identify <strong>one</strong> exceptional person with the skills, mindset, leadership, and commitment to help build CyphrWeb from the ground up.</p>
+
+    <div class="grid grid-2 reveal">
+      <div class="card">
+        <div class="icon">⚙️</div>
+        <h3>Core technical domains</h3>
+        <p>Strong in at least one: Web Development, App Development (Android/iOS), AI/ML, Cloud Computing, or Cyber Security.</p>
+      </div>
+      <div class="card">
+        <div class="icon">📈</div>
+        <h3>Business fundamentals</h3>
+        <p>An understanding of Sales, Marketing, and Market Research is expected alongside your technical strength.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="process">
+  <div class="wrap">
+    <div class="eyebrow">how it works</div>
+    <h2 class="section-title">Selection process overview</h2>
+    <p class="section-sub">Six stages — and every candidate moves through all of them. Nobody is cut early for a low promotion score.</p>
+
+    <div class="timeline reveal">
+      <div class="timeline-step"><div class="num">1</div><h4>Google Form Submission</h4></div>
+      <div class="timeline-step"><div class="num">2</div><h4>WhatsApp Group</h4></div>
+      <div class="timeline-step"><div class="num">3</div><h4>Google Meet</h4></div>
+      <div class="timeline-step"><div class="num">4</div><h4>CyphrWeb Promotion Phase</h4></div>
+      <div class="timeline-step"><div class="num">5</div><h4>2-Day Founder Evaluation</h4></div>
+      <div class="timeline-step"><div class="num">6</div><h4>Final Co-Founder Selection (1 Position)</h4></div>
+    </div>
+  </div>
+</section>
+
+<section id="promotion">
+  <div class="wrap">
+    <div class="eyebrow">phase 1</div>
+    <h2 class="section-title">CyphrWeb Promotion Phase</h2>
+    <p class="section-sub">Before the founder evaluation begins, this phase measures consistency, creativity, marketing ability, communication, ownership, and execution.</p>
+
+    <div class="chip-row reveal" style="margin-bottom:40px;">
+      <span class="chip">Consistency</span>
+      <span class="chip">Creativity</span>
+      <span class="chip">Marketing Ability</span>
+      <span class="chip">Communication Skills</span>
+      <span class="chip">Ownership</span>
+      <span class="chip">Execution</span>
+    </div>
+
+    <div class="reveal">
+      <div class="table-label">Poster &amp; Reel Promotion</div>
+      <div class="table-wrap">
+        <table class="points-table">
+          <tr><th>Activity</th><th>Points</th></tr>
+          <tr><td>AI Generated Poster + Posted on Social Media</td><td class="pts">5</td></tr>
+          <tr><td>Self Designed Poster + Posted on Social Media</td><td class="pts">10</td></tr>
+          <tr><td>AI Generated Reel + Posted on Social Media</td><td class="pts">10</td></tr>
+          <tr><td>Self Edited Reel + Posted on Social Media</td><td class="pts">15</td></tr>
+          <tr><td>Self Created Reel with Face/Voice</td><td class="pts">20</td></tr>
+        </table>
+      </div>
+
+      <div class="table-label">Content &amp; Community Promotion</div>
+      <div class="table-wrap">
+        <table class="points-table">
+          <tr><th>Activity</th><th>Points</th></tr>
+          <tr><td>Story Upload</td><td class="pts">2</td></tr>
+          <tr><td>LinkedIn Post</td><td class="pts">5</td></tr>
+          <tr><td>Twitter / X Post</td><td class="pts">5</td></tr>
+          <tr><td>Discord / Telegram Promotion</td><td class="pts">5</td></tr>
+          <tr><td>College Group Promotion</td><td class="pts">10</td></tr>
+          <tr><td>Every Valid Registration</td><td class="pts">50</td></tr>
+        </table>
+      </div>
+
+      <div class="table-label">Special Achievements</div>
+      <div class="table-wrap">
+        <table class="points-table">
+          <tr><th>Achievement</th><th>Points</th></tr>
+          <tr><td>College Ambassador Onboarded</td><td class="pts">50</td></tr>
+          <tr><td>Faculty Promotion Support</td><td class="pts">50</td></tr>
+          <tr><td>Sponsor Lead Generated</td><td class="pts">100</td></tr>
+          <tr><td>Sponsor Successfully Closed</td><td class="pts">250</td></tr>
+        </table>
+      </div>
+
+      <div class="grid grid-2">
+        <div>
+          <div class="table-label">Bonus Points</div>
+          <div class="table-wrap">
+            <table class="points-table">
+              <tr><th>Bonus</th><th>Points</th></tr>
+              <tr><td>Viral Reel (5,000+ Views)</td><td class="pts">+25</td></tr>
+              <tr><td>Viral Reel (10,000+ Views)</td><td class="pts">+50</td></tr>
+              <tr><td>Exceptional Marketing Idea</td><td class="pts">+25</td></tr>
+            </table>
+          </div>
+        </div>
+        <div>
+          <div class="table-label">Penalty Points</div>
+          <div class="table-wrap">
+            <table class="points-table">
+              <tr><th>Penalty</th><th>Points</th></tr>
+              <tr><td>Fake Registration</td><td class="pts neg">−50</td></tr>
+              <tr><td>Spam Promotion</td><td class="pts neg">−20</td></tr>
+              <tr><td>False Information</td><td class="pts neg">−50</td></tr>
+              <tr><td>Plagiarized Content</td><td class="pts neg">−20</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="timeline-note reveal">All candidates remain in the process — no one is eliminated for low promotion scores.</p>
+  </div>
+</section>
+
+<section id="founder-eval">
+  <div class="wrap">
+    <div class="eyebrow">phase 2</div>
+    <h2 class="section-title">2-Day Founder Evaluation</h2>
+    <p class="section-sub">Every candidate becomes Acting Founder for two days — full decision-making authority, leading the team, managing projects, and handling clients.</p>
+
+    <div class="grid grid-3 reveal">
+      <div class="role-card role-sandesh">
+        <div class="role-avatar">🤝</div>
+        <h3>Sandesh</h3>
+        <div class="role-tag">Supportive Co-Founder</div>
+        <ul>
+          <li>Supports the candidate</li>
+          <li>Assists in execution</li>
+          <li>Occasionally acts slow to evaluate leadership &amp; follow-up</li>
+        </ul>
+      </div>
+      <div class="role-card role-candidate featured">
+        <div class="role-avatar">👑</div>
+        <h3>Candidate</h3>
+        <div class="role-tag">Acting Founder</div>
+        <ul>
+          <li>Lead the team</li>
+          <li>Delegate tasks</li>
+          <li>Make business decisions</li>
+          <li>Handle clients</li>
+          <li>Coordinate execution</li>
+          <li>Ensure successful project delivery</li>
+        </ul>
+      </div>
+      <div class="role-card role-tejas">
+        <div class="role-avatar">⚖️</div>
+        <h3>Tejas</h3>
+        <div class="role-tag">Challenging Co-Founder</div>
+        <ul>
+          <li>Questions decisions</li>
+          <li>Challenges ideas</li>
+          <li>Creates realistic business pressure</li>
+          <li>Evaluates conflict-management ability</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="evaluation-points">
+  <div class="wrap">
+    <div class="eyebrow">scoring — phase 2</div>
+    <h2 class="section-title">Co-Founder Evaluation — Points</h2>
+    <p class="section-sub">12 categories testing every dimension of how you'd run the company. The candidate with the highest total score wins the co-founder position.</p>
+
+    <!-- Visual score bars -->
+    <div class="eval-list reveal" id="evalList"></div>
+
+    <!-- Detailed breakdown cards -->
+    <div class="eval-detail-grid reveal">
+
+      <div class="eval-detail-card" style="--accent: var(--green)">
+        <div class="edc-header">
+          <div class="edc-num">1</div>
+          <div>
+            <div class="edc-title">Client Acquisition &amp; Sales</div>
+            <div class="edc-total">80 Points</div>
+          </div>
+          <div class="edc-icon">🤝</div>
+        </div>
+        <div class="edc-rows">
+          <div class="edc-row"><span>1st Client Acquisition</span><span class="edc-pts">20</span></div>
+          <div class="edc-row"><span>2nd Client Acquisition</span><span class="edc-pts">25</span></div>
+          <div class="edc-row"><span>3rd Client Acquisition</span><span class="edc-pts">35</span></div>
+        </div>
+      </div>
+
+      <div class="eval-detail-card" style="--accent: var(--violet)">
+        <div class="edc-header">
+          <div class="edc-num">2</div>
+          <div>
+            <div class="edc-title">Marketing Strategy</div>
+            <div class="edc-total">40 Points</div>
+          </div>
+          <div class="edc-icon">🎯</div>
+        </div>
+        <div class="edc-rows">
+          <div class="edc-row"><span>Marketing Plan</span><span class="edc-pts">15</span></div>
+          <div class="edc-row"><span>Customer Acquisition Strategy</span><span class="edc-pts">15</span></div>
+          <div class="edc-row"><span>Execution Approach</span><span class="edc-pts">10</span></div>
+        </div>
+      </div>
+
+      <div class="eval-detail-card" style="--accent: var(--cyan)">
+        <div class="edc-header">
+          <div class="edc-num">3</div>
+          <div>
+            <div class="edc-title">Market Research</div>
+            <div class="edc-total">40 Points</div>
+          </div>
+          <div class="edc-icon">🔍</div>
+        </div>
+        <div class="edc-rows">
+          <div class="edc-row"><span>Competitor Analysis</span><span class="edc-pts">15</span></div>
+          <div class="edc-row"><span>Target Audience Research</span><span class="edc-pts">15</span></div>
+          <div class="edc-row"><span>Pricing Research</span><span class="edc-pts">10</span></div>
+        </div>
+      </div>
+
+      <div class="eval-detail-card" style="--accent: var(--amber)">
+        <div class="edc-header">
+          <div class="edc-num">4</div>
+          <div>
+            <div class="edc-title">Leadership &amp; Team Management</div>
+            <div class="edc-total">60 Points</div>
+          </div>
+          <div class="edc-icon">👥</div>
+        </div>
+        <div class="edc-rows">
+          <div class="edc-row"><span>Task Delegation</span><span class="edc-pts">15</span></div>
+          <div class="edc-row"><span>Team Coordination</span><span class="edc-pts">15</span></div>
+          <div class="edc-row"><span>Handling Sandesh <span class="edc-tag">Supportive but Slow</span></span><span class="edc-pts">15</span></div>
+          <div class="edc-row"><span>Handling Tejas <span class="edc-tag red">Challenging</span></span><span class="edc-pts">15</span></div>
+        </div>
+      </div>
+
+      <div class="eval-detail-card" style="--accent: var(--violet)">
+        <div class="edc-header">
+          <div class="edc-num">5</div>
+          <div>
+            <div class="edc-title">Decision Making</div>
+            <div class="edc-total">50 Points</div>
+          </div>
+          <div class="edc-icon">💡</div>
+        </div>
+        <div class="edc-rows">
+          <div class="edc-row"><span>Business Decisions</span><span class="edc-pts">20</span></div>
+          <div class="edc-row"><span>Product Decisions</span><span class="edc-pts">15</span></div>
+          <div class="edc-row"><span>Risk Management</span><span class="edc-pts">15</span></div>
+        </div>
+      </div>
+
+      <div class="eval-detail-card" style="--accent: var(--cyan)">
+        <div class="edc-header">
+          <div class="edc-num">6</div>
+          <div>
+            <div class="edc-title">Communication Skills</div>
+            <div class="edc-total">40 Points</div>
+          </div>
+          <div class="edc-icon">💬</div>
+        </div>
+        <div class="edc-rows">
+          <div class="edc-row"><span>Client Communication</span><span class="edc-pts">15</span></div>
+          <div class="edc-row"><span>Team Communication</span><span class="edc-pts">15</span></div>
+          <div class="edc-row edc-row-note"><span>+10 assessed holistically</span></div>
+        </div>
+      </div>
+
+      <div class="eval-detail-card" style="--accent: var(--green)">
+        <div class="edc-header">
+          <div class="edc-num">7</div>
+          <div>
+            <div class="edc-title">Project Execution</div>
+            <div class="edc-total">50 Points</div>
+          </div>
+          <div class="edc-icon">⚡</div>
+        </div>
+        <div class="edc-rows">
+          <div class="edc-row"><span>Requirement Gathering</span><span class="edc-pts">10</span></div>
+          <div class="edc-row"><span>Planning</span><span class="edc-pts">10</span></div>
+          <div class="edc-row"><span>Execution</span><span class="edc-pts">15</span></div>
+          <div class="edc-row"><span>Final Delivery</span><span class="edc-pts">15</span></div>
+        </div>
+      </div>
+
+      <div class="eval-detail-card" style="--accent: var(--violet)">
+        <div class="edc-header">
+          <div class="edc-num">8</div>
+          <div>
+            <div class="edc-title">Product Quality</div>
+            <div class="edc-total">40 Points</div>
+          </div>
+          <div class="edc-icon">&lt;/&gt;</div>
+        </div>
+        <div class="edc-rows">
+          <div class="edc-row"><span>UI/UX Quality</span><span class="edc-pts">10</span></div>
+          <div class="edc-row"><span>Functionality</span><span class="edc-pts">15</span></div>
+          <div class="edc-row"><span>Bug Handling</span><span class="edc-pts">10</span></div>
+          <div class="edc-row"><span>Client Satisfaction</span><span class="edc-pts">5</span></div>
+        </div>
+      </div>
+
+      <div class="eval-detail-card" style="--accent: var(--amber)">
+        <div class="edc-header">
+          <div class="edc-num">9</div>
+          <div>
+            <div class="edc-title">Profit Utilization Strategy</div>
+            <div class="edc-total">25 Points</div>
+          </div>
+          <div class="edc-icon">💰</div>
+        </div>
+        <div class="edc-rows">
+          <div class="edc-row"><span>Profit Distribution Plan</span><span class="edc-pts">10</span></div>
+          <div class="edc-row"><span>Reinvestment Strategy</span><span class="edc-pts">10</span></div>
+          <div class="edc-row"><span>Growth Vision</span><span class="edc-pts">5</span></div>
+        </div>
+      </div>
+
+      <div class="eval-detail-card" style="--accent: var(--green)">
+        <div class="edc-header">
+          <div class="edc-num">10</div>
+          <div>
+            <div class="edc-title">Founder Mindset</div>
+            <div class="edc-total">35 Points</div>
+          </div>
+          <div class="edc-icon">🛡️</div>
+        </div>
+        <div class="edc-rows">
+          <div class="edc-row"><span>Ownership</span><span class="edc-pts">10</span></div>
+          <div class="edc-row"><span>Initiative</span><span class="edc-pts">10</span></div>
+          <div class="edc-row"><span>Responsibility</span><span class="edc-pts">10</span></div>
+          <div class="edc-row"><span>Adaptability</span><span class="edc-pts">5</span></div>
+        </div>
+      </div>
+
+      <div class="eval-detail-card" style="--accent: var(--red)">
+        <div class="edc-header">
+          <div class="edc-num">11</div>
+          <div>
+            <div class="edc-title">Problem Solving &amp; Crisis Handling</div>
+            <div class="edc-total">20 Points</div>
+          </div>
+          <div class="edc-icon">🚨</div>
+        </div>
+        <div class="edc-rows">
+          <div class="edc-row"><span>Issue Resolution</span><span class="edc-pts">10</span></div>
+          <div class="edc-row"><span>Crisis Management</span><span class="edc-pts">10</span></div>
+        </div>
+      </div>
+
+      <div class="eval-detail-card" style="--accent: var(--cyan)">
+        <div class="edc-header">
+          <div class="edc-num">12</div>
+          <div>
+            <div class="edc-title">Innovation &amp; Growth Ideas</div>
+            <div class="edc-total">20 Points</div>
+          </div>
+          <div class="edc-icon">🚀</div>
+        </div>
+        <div class="edc-rows">
+          <div class="edc-row"><span>New Ideas</span><span class="edc-pts">10</span></div>
+          <div class="edc-row"><span>Business Expansion Suggestions</span><span class="edc-pts">10</span></div>
+        </div>
+      </div>
+
+    </div><!-- /.eval-detail-grid -->
+
+    <!-- Bonus / Penalty summary banner -->
+    <div class="eval-summary-row reveal">
+      <div class="eval-summary-box green">
+        <div class="esb-title">Bonus Points <span>(+50 max)</span></div>
+        <div class="esb-items">
+          <div><span>Extra Client Acquired</span><span>+20</span></div>
+          <div><span>Exceptional Leadership</span><span>+10</span></div>
+          <div><span>Outstanding Execution</span><span>+10</span></div>
+          <div><span>Innovative Business Idea</span><span>+10</span></div>
+        </div>
+      </div>
+      <div class="eval-summary-box red">
+        <div class="esb-title">Penalty Points <span>(-50 max)</span></div>
+        <div class="esb-items">
+          <div><span>Missing Deadlines</span><span>-10</span></div>
+          <div><span>Poor Communication</span><span>-10</span></div>
+          <div><span>Lack of Ownership</span><span>-10</span></div>
+          <div><span>Team Conflict Creation</span><span>-10</span></div>
+          <div><span>Unprofessional Behaviour</span><span>-10</span></div>
+        </div>
+      </div>
+      <div class="eval-summary-box violet">
+        <div class="esb-title">No Fixed Total</div>
+        <div class="esb-note">The candidate with the <strong>highest points</strong> in each phase will move forward. 1 position available.</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section id="evaluating">
+  <div class="wrap">
+    <div class="eyebrow">final message</div>
+    <h2 class="section-title">What we're evaluating</h2>
+    <p class="section-sub">More than skills, we value execution, commitment, leadership, and the mindset required to build something meaningful.</p>
+    <div class="chip-row reveal">
+      <span class="chip">Leadership</span>
+      <span class="chip">Ownership</span>
+      <span class="chip">Communication</span>
+      <span class="chip">Sales Ability</span>
+      <span class="chip">Market Research</span>
+      <span class="chip">Decision Making</span>
+      <span class="chip">Problem Solving</span>
+      <span class="chip">Team Management</span>
+      <span class="chip">Execution Ability</span>
+      <span class="chip">Founder Mindset</span>
+    </div>
+  </div>
+</section>
+
+<section id="cf-dashboard">
+  <div class="wrap">
+    <div class="eyebrow">live dashboard</div>
+    <h2 class="section-title">Co-Founder Applicant Dashboard</h2>
+    <p class="section-sub">All applicants, ranked by score. Edit the data array in the script to update scores or status — the leaderboard re-sorts automatically.</p>
+
+    <div class="dash-stats reveal">
+      <div class="dash-stat"><div class="num" id="cfTotalApplicants">0</div><div class="lbl">Total Applicants</div></div>
+      <div class="dash-stat"><div class="num" id="cfShortlisted">0</div><div class="lbl">Shortlisted</div></div>
+      <div class="dash-stat highlight"><div class="num" id="cfSelected">0</div><div class="lbl">Selected (1 Slot)</div></div>
+      <div class="dash-stat"><div class="num" id="cfTopScore">0</div><div class="lbl">Top Score</div></div>
+    </div>
+
+    <div class="dash-toolbar reveal">
+      <input type="text" id="cfSearch" placeholder="Search by name, skills, or college...">
+      <select id="cfFilter">
+        <option value="all">All Statuses</option>
+        <option value="selected">Selected</option>
+        <option value="shortlisted">Shortlisted</option>
+        <option value="review">In Review</option>
+        <option value="rejected">Rejected</option>
+      </select>
+      <!-- Add New Applicant button removed — add applicants directly in the code (cfApplicants array in <script>) -->
+    </div>
+
+    <div class="table-label">🏆 Leaderboard</div>
+    <div class="leaderboard reveal" id="cfLeaderboard"></div>
+
+    <div class="table-label">All Applicants</div>
+    <div class="data-table-wrap reveal">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Rank</th><th>Name</th><th>Skills</th><th>Experience</th>
+            <th>College</th><th>Applied Role</th><th>Score</th><th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="cfTableBody"></tbody>
+      </table>
+    </div>
+    <div class="empty-state" id="cfEmptyState" style="display:none; margin-top:16px;">No applicants match your search or filter.</div>
+  </div>
+</section>
+
+</div><!-- /#cofounder -->
+
+<!-- ================= HACKATHON 2026 ================= -->
+<div class="tab-panel" id="hackathon">
+
+<section id="hack-intro" style="padding-top:0;">
+  <div class="wrap">
+    <div class="hack-hero reveal">
+      <div class="eyebrow">23 apr – 20 jun 2026 · registration open</div>
+      <h2>CyphrWeb <span class="hl">Hackathon</span> 2026</h2>
+      <p>Build like a real startup developer. No PPTs, no presentations — only real building. Get a startup-level problem statement and 100% online, asynchronous building time.</p>
+      <div class="hack-badges">
+        <span class="badge green">Beginner Friendly</span>
+        <span class="badge amber">Any AI Tools Allowed</span>
+        <span class="badge red">Only 50 Teams</span>
+      </div>
+      <div class="stat-row">
+        <div class="stat"><div class="num">₹10,000</div><div class="lbl">Prize pool</div></div>
+        <div class="stat"><div class="num">1–4</div><div class="lbl">Team size</div></div>
+        <div class="stat"><div class="num">100%</div><div class="lbl">Online</div></div>
+        <div class="stat"><div class="num">50</div><div class="lbl">Teams max</div></div>
+      </div>
+    </div>
+
+    <div class="eyebrow">registration closes in</div>
+    <div class="countdown reveal" id="countdown">
+      <div class="unit"><div class="num" id="cd-days">--</div><div class="lbl">Days</div></div>
+      <div class="unit"><div class="num" id="cd-hours">--</div><div class="lbl">Hours</div></div>
+      <div class="unit"><div class="num" id="cd-mins">--</div><div class="lbl">Mins</div></div>
+      <div class="unit"><div class="num" id="cd-secs">--</div><div class="lbl">Secs</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="hack-includes">
+  <div class="wrap">
+    <div class="eyebrow">participant pass includes</div>
+    <h2 class="section-title">Everything you need to ship</h2>
+    <div class="grid grid-4 reveal">
+      <div class="card"><div class="icon">💻</div><h3>Full hackathon access</h3><p>Every round, every resource, for the whole event window.</p></div>
+      <div class="card"><div class="icon">💡</div><h3>Real-world startup ideas</h3><p>Work on problem statements pulled from actual startup needs.</p></div>
+      <div class="card"><div class="icon">🏆</div><h3>Prize pool up to ₹10,000</h3><p>Cash prizes for the strongest builds across categories.</p></div>
+      <div class="card"><div class="icon">📜</div><h3>Certificate for all</h3><p>Every participant who finishes gets a certificate.</p></div>
+      <div class="card"><div class="icon">🎥</div><h3>Live coding access</h3><p>Watch other teams build in real time and learn from their process.</p></div>
+      <div class="card"><div class="icon">🧠</div><h3>Learn real AI workflows</h3><p>See how AI tools are actually used to ship production work.</p></div>
+      <div class="card"><div class="icon">🎮</div><h3>Fun activities &amp; games</h3><p>Networking sessions and breaks built into the schedule.</p></div>
+      <div class="card"><div class="icon">🚀</div><h3>Startup-level problems</h3><p>Problem statements designed to feel like the real thing.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="hack-timeline">
+  <div class="wrap">
+    <div class="eyebrow">event timeline</div>
+    <h2 class="section-title">From registration to final sprint</h2>
+
+    <div class="hack-timeline reveal">
+      <div class="hack-timeline-item">
+        <div class="date">23 Apr – 20 Jun</div>
+        <div class="dot-col"><div class="dot"></div><div class="line"></div></div>
+        <div class="content"><h4>Registration</h4><p>Scan the QR or visit the site to register your team. 1–4 members per team.</p></div>
+      </div>
+      <div class="hack-timeline-item">
+        <div class="date">22 Jun – 20 Jul</div>
+        <div class="dot-col"><div class="dot"></div><div class="line"></div></div>
+        <div class="content"><h4>Prototype Submission</h4><p>Submit your early prototype based on the assigned problem statement.</p></div>
+      </div>
+      <div class="hack-timeline-item">
+        <div class="date">25, 26, 27 Jul</div>
+        <div class="dot-col"><div class="dot"></div><div class="line"></div></div>
+        <div class="content"><h4>Execution Rounds</h4><p>Live build rounds with feedback and iteration.</p></div>
+      </div>
+      <div class="hack-timeline-item">
+        <div class="date">1 Aug</div>
+        <div class="dot-col"><div class="dot"></div></div>
+        <div class="content"><h4>Final 24hr Sprint</h4><p>The last build push, followed by judging and results.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="hack-not-typical">
+  <div class="wrap">
+    <div class="grid grid-2 reveal" style="align-items:center;">
+      <div>
+        <div class="eyebrow">a different kind of hackathon</div>
+        <h2 class="section-title">This is not your typical hackathon.</h2>
+        <div class="chip-row" style="flex-direction:column; align-items:flex-start;">
+          <span class="badge red">✕ No PPT</span>
+          <span class="badge red">✕ No Presentations</span>
+          <span class="badge green">✓ Only Real Building</span>
+        </div>
+      </div>
+      <div class="card" style="text-align:center; padding:40px;">
+        <h3 style="font-size:18px; margin-bottom:12px;">If you're still making PPTs...</h3>
+        <p style="font-size:20px; color:var(--red); font-family:var(--mono); font-weight:800;">THIS IS NOT FOR YOU</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="hack-dashboard">
+  <div class="wrap">
+    <div class="eyebrow">live dashboard</div>
+    <h2 class="section-title">Hackathon Team Dashboard</h2>
+    <p class="section-sub">All registered teams, ranked by points. Update points directly in the <code style="font-family:var(--mono);color:var(--cyan);font-size:13px;">hackTeams</code> array in the code — the leaderboard re-sorts automatically.</p>
+
+    <div class="dash-stats reveal">
+      <div class="dash-stat"><div class="num" id="hackTotalTeams">13</div><div class="lbl">Total Teams</div></div>
+      <div class="dash-stat highlight"><div class="num" id="hackActiveTeams">13</div><div class="lbl">Active Teams</div></div>
+      <div class="dash-stat"><div class="num" id="hackTopTeam">—</div><div class="lbl">Top Team</div></div>
+      <div class="dash-stat"><div class="num" id="hackTopScore">—</div><div class="lbl">Top Score</div></div>
+    </div>
+
+    <div class="dash-toolbar reveal">
+      <input type="text" id="hackSearch" placeholder="Search by team name or leader...">
+      <select id="hackFilter">
+        <option value="all">All Teams</option>
+        <option value="active">Active Only</option>
+        <option value="inactive">Inactive Only</option>
+      </select>
+      <!-- Add New Registration & Edit buttons removed — update teams directly in code (hackTeams array in <script>) -->
+    </div>
+
+    <div class="table-label">🏆 Leaderboard</div>
+    <div class="leaderboard reveal" id="hackLeaderboard"></div>
+
+    <div class="table-label">All Registered Teams</div>
+    <div class="data-table-wrap reveal">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Rank</th><th>Team Name</th><th>Team Leader</th><th>Team Members</th>
+            <th>Project Name</th><th>Points</th><th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="hackTableBody"></tbody>
+      </table>
+    </div>
+    <div class="empty-state" id="hackEmptyState" style="display:none; margin-top:16px;">No teams match your search.</div>
+  </div>
+</section>
+
+</div><!-- /#hackathon -->
+
+<!-- ================= APPLY ================= -->
+<section id="apply">
+  <div class="wrap">
+    <div class="eyebrow">get involved</div>
+    <h2 class="section-title">Apply or register</h2>
+    <p class="section-sub">Tell us which track you're interested in. We'll follow up over WhatsApp or email.</p>
+
+    <form class="apply-card reveal" id="applyForm">
+      <div class="form-row">
+        <label for="track">Track</label>
+        <select id="track" required>
+          <option value="">Select a track</option>
+          <option value="cofounder">Co-Founder Selection Process</option>
+          <option value="hackathon">Hackathon 2026</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label for="name">Full name</label>
+        <input type="text" id="name" placeholder="Your name" required>
+      </div>
+      <div class="form-row">
+        <label for="email">Email</label>
+        <input type="email" id="email" placeholder="you@example.com" required>
+      </div>
+      <div class="form-row">
+        <label for="message">A short note about you</label>
+        <textarea id="message" placeholder="Skills, what excites you about CyphrWeb..."></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">Submit application</button>
+      <div class="form-msg" id="formMsg">Thanks — your application is ready. We'll be in touch soon.</div>
+    </form>
+  </div>
+</section>
+
+<!-- ================= CONTACT ================= -->
+<section id="contact">
+  <div class="wrap">
+    <div class="eyebrow">questions?</div>
+    <h2 class="section-title">Reach out directly</h2>
+    <div class="contact-grid reveal">
+      <div class="contact-card">
+        <div class="icon">📞</div>
+        <div><div class="name">Tejas Naiknaware</div><div class="num">80079 53204</div></div>
+      </div>
+      <div class="contact-card">
+        <div class="icon">📞</div>
+        <div><div class="name">Sandesh Shingankar</div><div class="num">8668916936</div></div>
+      </div>
+    </div>
+
+    <div class="register-cta reveal">
+      <h3>Ready to build something meaningful?</h3>
+      <p>Join the co-founder program, or join the hackathon. Either way, we want to see what you can ship.</p>
+      <div class="cta-row" style="justify-content:center;">
+        <a href="#apply" class="btn btn-primary">Apply Now</a>
+        <a href="https://cyphrweb.github.io/-" target="_blank" rel="noopener" class="btn btn-ghost">Visit cyphrweb.github.io →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Modals removed — all data is managed directly in the code -->
+
+<footer>
+  <div class="wrap">
+    <div class="logo"><span class="logo-bracket">&lt;/&gt;</span> CYPHR<span>WEB</span></div>
+    <p>Build. Launch. Grow. — © 2026 Team CyphrWeb</p>
+  </div>
+</footer>
+
+<script>
+  // ---------- Mobile nav ----------
+  const navToggle = document.getElementById('navToggle');
+  const navLinks = document.getElementById('navLinks');
+  navToggle.addEventListener('click', () => navLinks.classList.toggle('open'));
+  navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navLinks.classList.remove('open')));
+
+  // ---------- Tab switching ----------
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  const panels = { cofounder: document.getElementById('cofounder'), hackathon: document.getElementById('hackathon') };
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tabBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      Object.values(panels).forEach(p => p.classList.remove('active'));
+      panels[btn.dataset.tab].classList.add('active');
+    });
+  });
+
+  // Nav links that point inside a tab panel should activate that tab
+  const tabTargetMap = { cofounder: 'cofounder', hackathon: 'hackathon', 'cf-dashboard': 'cofounder', 'hack-dashboard': 'hackathon' };
+  document.querySelectorAll('a[href="#cofounder"], a[href="#hackathon"], a[href="#cf-dashboard"], a[href="#hack-dashboard"]').forEach(link => {
+    link.addEventListener('click', (e) => {
+      const href = link.getAttribute('href').slice(1);
+      const target = tabTargetMap[href];
+      if (target && panels[target]) {
+        tabBtns.forEach(b => b.classList.toggle('active', b.dataset.tab === target));
+        Object.entries(panels).forEach(([k,p]) => p.classList.toggle('active', k === target));
+      }
+    });
+  });
+
+  // ---------- Terminal typing effect ----------
+  const terminalHTML =
+`<span class="kw">function</span> <span class="fn">build</span>() {
+  ideas = <span class="str">"code"</span>;
+  code = <span class="str">"impact"</span>;
+  <span class="kw">return</span> <span class="fn">change</span>();
+}
+
+<span class="cmt">// Team CyphrWeb</span>
+<span class="kw">const</span> mission = <span class="str">"Build. Launch. Grow."</span>;`;
+
+  const termEl = document.getElementById('terminalBody');
+  // Render with a typing-ish reveal using a simple fade for performance/safety
+  termEl.innerHTML = terminalHTML + '<span class="cursor"></span>';
+
+  // ---------- Evaluation bars ----------
+  const evalData = [
+    ["Client Acquisition & Sales", 80],
+    ["Leadership & Team Management", 60],
+    ["Decision Making", 50],
+    ["Project Execution", 50],
+    ["Marketing Strategy", 40],
+    ["Market Research", 40],
+    ["Communication Skills", 40],
+    ["Product Quality", 40],
+    ["Founder Mindset", 35],
+    ["Profit Utilization Strategy", 25],
+    ["Problem Solving & Crisis Handling", 20],
+    ["Innovation & Growth Ideas", 20],
+  ];
+  const max = 80;
+  const evalList = document.getElementById('evalList');
+  evalData.forEach(([name, val]) => {
+    const row = document.createElement('div');
+    row.className = 'eval-row';
+    row.innerHTML = `
+      <div class="name">${name}</div>
+      <div class="bar-bg"><div class="bar-fill" style="width:0%" data-width="${(val/max*100).toFixed(1)}%"></div></div>
+      <div class="val">${val}</div>
+    `;
+    evalList.appendChild(row);
+  });
+
+  // ---------- Scroll reveal ----------
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        // animate bar fills if present
+        entry.target.querySelectorAll('.bar-fill').forEach(bar => {
+          bar.style.width = bar.dataset.width;
+        });
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  revealEls.forEach(el => io.observe(el));
+
+  // ---------- Countdown to registration close (20 June 2026) ----------
+  const target = new Date('2026-06-20T23:59:59');
+  function updateCountdown(){
+    const now = new Date();
+    let diff = target - now;
+    if (diff < 0) diff = 0;
+    const days = Math.floor(diff / (1000*60*60*24));
+    const hours = Math.floor((diff / (1000*60*60)) % 24);
+    const mins = Math.floor((diff / (1000*60)) % 60);
+    const secs = Math.floor((diff / 1000) % 60);
+    document.getElementById('cd-days').textContent = String(days).padStart(2,'0');
+    document.getElementById('cd-hours').textContent = String(hours).padStart(2,'0');
+    document.getElementById('cd-mins').textContent = String(mins).padStart(2,'0');
+    document.getElementById('cd-secs').textContent = String(secs).padStart(2,'0');
+  }
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+
+  // ---------- Apply form ----------
+  document.getElementById('applyForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    document.getElementById('formMsg').classList.add('show');
+    this.reset();
+  });
+
+  /* ==========================================================
+     HACKATHON DASHBOARD — CODE-ONLY DATA MANAGEMENT
+     ──────────────────────────────────────────────────────────
+     HOW TO UPDATE:
+
+     // Add new team here
+     Copy one entry below, paste at the end of the array,
+     give it the next `id`, set points to 0, status "active".
+
+     // Add or update team points here
+     Find the team by name and change its `points` value.
+     Save & reload — leaderboard re-sorts automatically.
+
+     Status: "active" | "inactive"
+  ========================================================== */
+  const hackTeams = [
+
+    // ── Add new team here ↓ ───────────────────────────────
+    // { id: 14, teamName: "New Team", leader: "Leader Name", members: [], project: "", points: 0, status: "active" },
+    // ─────────────────────────────────────────────────────
+
+    // Add or update team points here ↓  (edit the `points` value)
+    { id:  1, teamName: "CodeCrafter",      leader: "Prerana Sase",          members: ["Anjali Shinde", "Shravani Nalage", "Swara Patil"], project: "", points: 0, status: "active" },
+    { id:  2, teamName: "Teena",            leader: "Teena",                 members: [], project: "", points: 0, status: "active" },
+    { id:  3, teamName: "TechTribe",        leader: "Shreya Dhone",          members: ["Sayali Deshmane", "Minal Bhatale", "Dipali Kolekar"], project: "", points: 0, status: "active" },
+    { id:  4, teamName: "TEAM AXIOM",       leader: "Aditya Shelke",         members: ["Soham Gurav", "Tejas Bankar", "Rohan Jadhav"], project: "", points: 0, status: "active" },
+    { id:  5, teamName: "GitRekt",          leader: "Sai Bhujbal",           members: ["Sai Bhujbal", "Pranay Chavan"], project: "", points: 0, status: "active" },
+    { id:  6, teamName: "Honey Badger",     leader: "Soham Thorat",          members: [], project: "", points: 0, status: "active" },
+    { id:  7, teamName: "Shadow.io",        leader: "Vedarth Joshi",         members: ["Yash Dashrath"], project: "", points: 0, status: "active" },
+    { id:  8, teamName: "Pheonix",          leader: "Atharv Chaskar",        members: ["Omkar Rane", "Bhavjot Singh", "Prathmesh Patil"], project: "", points: 0, status: "active" },
+    { id:  9, teamName: "Team Innovators",  leader: "Atharv Abhay Tambile",  members: ["Lobhas Amar Tidke", "Sarthak Vijayakumar Ankolekar", "Rohan Sadashiv Kotsulwar"], project: "", points: 0, status: "active" },
+    { id: 10, teamName: "PixelProphets",    leader: "Sahil Vitthal Salunke", members: ["Vedant Vinayak Jadhav", "Shlok Gadhave"], project: "", points: 0, status: "active" },
+    { id: 11, teamName: "OG",               leader: "Hariom Kankatti",       members: ["Tanishqa Kumavat"], project: "", points: 0, status: "active" },
+    { id: 12, teamName: "CODER'S REQUIEM",  leader: "Pranav Naikude",        members: ["Sumeet Chauhan", "Mayank Bhujabal", "Srushti Shinde"], project: "", points: 0, status: "active" },
+    { id: 13, teamName: "Coding_Paglu",     leader: "Meet Agrawal",          members: ["Ishan Chand", "Pranav Bhatt", "Varun Baliharia"], project: "", points: 0, status: "active" },
+
+  ]; // ← Add new team objects above this line
+
+  function renderHackDashboard(){
+    const search = document.getElementById('hackSearch').value.trim().toLowerCase();
+    const filter = document.getElementById('hackFilter').value;
+
+    // Teams sorted highest points → lowest. Equal points keep original order (id tiebreaker).
+    const sorted = [...hackTeams].sort((a,b) => b.points - a.points || a.id - b.id);
+
+    // ── Stats ──────────────────────────────────────────────
+    document.getElementById('hackTotalTeams').textContent  = hackTeams.length;
+    document.getElementById('hackActiveTeams').textContent = hackTeams.filter(t => t.status === 'active').length;
+    const leader = sorted.find(t => t.points > 0);
+    document.getElementById('hackTopTeam').textContent  = leader ? leader.teamName : '—';
+    document.getElementById('hackTopScore').textContent = leader ? leader.points   : '—';
+
+    // ── Leaderboard ────────────────────────────────────────
+    const lb = document.getElementById('hackLeaderboard');
+    lb.innerHTML = '';
+    sorted.forEach((team, idx) => {
+      const row = document.createElement('div');
+      row.className = 'lb-row' + (idx < 3 ? ' rank-' + (idx + 1) : '');
+      const sub = [team.leader && ('Led by ' + team.leader), team.project].filter(Boolean).join(' · ') || 'Points: ' + team.points;
+      row.innerHTML =
+        '<div class="lb-rank">' + (idx + 1) + '</div>' +
+        '<div class="lb-info">' +
+          '<div class="lb-title">' + escapeHtml(team.teamName) + '</div>' +
+          '<div class="lb-sub">' + escapeHtml(sub) + '</div>' +
+        '</div>' +
+        '<div class="lb-score"><span class="lb-score-lbl">Points</span>' + team.points + '</div>';
+      lb.appendChild(row);
+    });
+
+    // ── Table (filtered) ───────────────────────────────────
+    let filtered = sorted.filter(t => {
+      if (filter === 'active'   && t.status !== 'active')   return false;
+      if (filter === 'inactive' && t.status !== 'inactive') return false;
+      if (!search) return true;
+      const hay = (t.teamName + ' ' + t.leader + ' ' + t.project + ' ' + t.members.join(' ')).toLowerCase();
+      return hay.includes(search);
+    });
+
+    const tbody      = document.getElementById('hackTableBody');
+    const emptyState = document.getElementById('hackEmptyState');
+    tbody.innerHTML  = '';
+
+    if (filtered.length === 0) {
+      emptyState.style.display = 'block';
+    } else {
+      emptyState.style.display = 'none';
+      filtered.forEach(team => {
+        const rank = sorted.findIndex(t => t.id === team.id) + 1;
+        const tr   = document.createElement('tr');
+        tr.innerHTML =
+          '<td>' + rank + '</td>' +
+          '<td><strong>' + escapeHtml(team.teamName) + '</strong></td>' +
+          '<td>' + (team.leader  ? escapeHtml(team.leader)  : '<span style="color:var(--line)">—</span>') + '</td>' +
+          '<td class="wrap-cell">' + (team.members.length ? escapeHtml(team.members.join(', ')) : '<span style="color:var(--line)">—</span>') + '</td>' +
+          '<td class="wrap-cell">' + (team.project ? escapeHtml(team.project) : '<span style="color:var(--line)">—</span>') + '</td>' +
+          '<td class="score-cell">' + team.points + '</td>' +
+          '<td><span class="status-pill ' + (team.status === 'active' ? 'selected' : 'rejected') + '">' + team.status + '</span></td>';
+        tbody.appendChild(tr);
+      });
+    }
+  }
+
+  document.getElementById('hackSearch').addEventListener('input',  renderHackDashboard);
+  document.getElementById('hackFilter').addEventListener('change', renderHackDashboard);
+  renderHackDashboard();
+
+
+  /* ==========================================================
+     CO-FOUNDER DASHBOARD — CODE-ONLY DATA MANAGEMENT
+     ──────────────────────────────────────────────────────────
+     HOW TO UPDATE:
+
+     // Add new applicant here
+     Copy one entry below, paste at the end of the array,
+     give it the next `id`, set score: 0, status: "shortlisted".
+
+     // Add or update applicant score here
+     Find the applicant by name and change their `score` value.
+     Save & reload — leaderboard re-sorts automatically.
+
+     Status options: "shortlisted" | "selected" | "review" | "rejected"
+  ========================================================== */
+  const cfApplicants = [
+
+    // ── Add new applicant here ↓ ──────────────────────────
+    // { id: 8, name: "New Name", skills: [], experience: "", college: "", role: "Co-Founder", score: 0, status: "shortlisted" },
+    // ─────────────────────────────────────────────────────
+
+    // Add or update applicant score here ↓  (edit the `score` value)
+    { id: 1, name: "Vaishnavi Narale",        skills: ["AI / Machine Learning"], experience: "", college: "NMIET", role: "Co-Founder", score: 0, status: "shortlisted" },
+    { id: 2, name: "Paras Babar",             skills: ["Sales & Marketing"], experience: "", college: "NMIET", role: "Co-Founder", score: 0, status: "shortlisted" },
+    { id: 3, name: "Priya Namdev More",       skills: ["Web Development"], experience: "", college: "Nutan Maharashtra Institute of Engineering and Technology (S.E Computer Engineering)", role: "Co-Founder", score: 0, status: "shortlisted" },
+    { id: 4, name: "Pranav Kishan Shinde",    skills: ["AI / Machine Learning"], experience: "", college: "NMIET 2nd Year 4th Sem", role: "Co-Founder", score: 0, status: "shortlisted" },
+    { id: 5, name: "Manasi Bhupesh Kulkarni", skills: ["Web Development", "Sales & Marketing"], experience: "", college: "NMIET Information Technology Second Year", role: "Co-Founder", score: 0, status: "shortlisted" },
+    { id: 6, name: "Rajashree Kinge",         skills: ["Web Development", "Sales & Marketing", "Business Strategy & Product Planning"], experience: "-", college: "NMIET ENTC 2", role: "Co-Founder", score: 0, status: "shortlisted" },
+    { id: 7, name: "Shubham Gaikwad",         skills: ["Web Development", "Sales & Marketing"], experience: "", college: "NMIET", role: "Co-Founder", score: 0, status: "shortlisted" },
+
+  ]; // ← Add new applicant objects above this line
+
+  function renderCfDashboard(){
+    const search = document.getElementById('cfSearch').value.trim().toLowerCase();
+    const filter = document.getElementById('cfFilter').value;
+
+    // Applicants sorted highest score → lowest. Equal scores keep original order (id tiebreaker).
+    const sorted = [...cfApplicants].sort((a,b) => b.score - a.score || a.id - b.id);
+
+    // ── Stats ──────────────────────────────────────────────
+    document.getElementById('cfTotalApplicants').textContent = cfApplicants.length;
+    document.getElementById('cfShortlisted').textContent     = cfApplicants.filter(a => a.status === 'shortlisted').length;
+    document.getElementById('cfSelected').textContent        = cfApplicants.filter(a => a.status === 'selected').length;
+    document.getElementById('cfTopScore').textContent        = (sorted.length && sorted[0].score > 0) ? sorted[0].score : '—';
+
+    // ── Leaderboard ────────────────────────────────────────
+    const lb = document.getElementById('cfLeaderboard');
+    lb.innerHTML = '';
+    sorted.forEach((a, idx) => {
+      const row = document.createElement('div');
+      row.className = 'lb-row' + (idx < 3 ? ' rank-' + (idx + 1) : '');
+      const sub = [a.role, a.college].filter(Boolean).join(' · ');
+      row.innerHTML =
+        '<div class="lb-rank">' + (idx + 1) + '</div>' +
+        '<div class="lb-info">' +
+          '<div class="lb-title">' + escapeHtml(a.name) + '</div>' +
+          '<div class="lb-sub">'  + escapeHtml(sub)     + '</div>' +
+        '</div>' +
+        '<div class="lb-score"><span class="lb-score-lbl">Score</span>' + a.score + '</div>';
+      lb.appendChild(row);
+    });
+
+    // ── Table (filtered) ───────────────────────────────────
+    let filtered = sorted.filter(a => {
+      if (filter !== 'all' && a.status !== filter) return false;
+      if (!search) return true;
+      const hay = (a.name + ' ' + a.skills.join(' ') + ' ' + a.college + ' ' + a.role).toLowerCase();
+      return hay.includes(search);
+    });
+
+    const tbody      = document.getElementById('cfTableBody');
+    const emptyState = document.getElementById('cfEmptyState');
+    const labels     = { selected: 'Selected', shortlisted: 'Shortlisted', review: 'In Review', rejected: 'Rejected' };
+    tbody.innerHTML  = '';
+
+    if (filtered.length === 0) {
+      emptyState.style.display = 'block';
+    } else {
+      emptyState.style.display = 'none';
+      filtered.forEach(a => {
+        const rank = sorted.findIndex(x => x.id === a.id) + 1;
+        const tr   = document.createElement('tr');
+        tr.innerHTML =
+          '<td>' + rank + '</td>' +
+          '<td><strong>' + escapeHtml(a.name) + '</strong></td>' +
+          '<td class="wrap-cell">' + (a.skills.length ? escapeHtml(a.skills.join(', ')) : '<span style="color:var(--line)">—</span>') + '</td>' +
+          '<td>' + (a.experience ? escapeHtml(a.experience) : '<span style="color:var(--line)">—</span>') + '</td>' +
+          '<td>' + (a.college    ? escapeHtml(a.college)    : '<span style="color:var(--line)">—</span>') + '</td>' +
+          '<td class="wrap-cell">' + escapeHtml(a.role) + '</td>' +
+          '<td class="score-cell">' + a.score + '</td>' +
+          '<td><span class="status-pill ' + a.status + '">' + (labels[a.status] || a.status) + '</span></td>';
+        tbody.appendChild(tr);
+      });
+    }
+  }
+
+  document.getElementById('cfSearch').addEventListener('input',  renderCfDashboard);
+  document.getElementById('cfFilter').addEventListener('change', renderCfDashboard);
+  renderCfDashboard();
+
+  // ── Shared helper ──────────────────────────────────────
+  function escapeHtml(str){
+    const d = document.createElement('div');
+    d.textContent = str ?? '';
+    return d.innerHTML;
+  }
+</script>
+
+</body>
+</html>
