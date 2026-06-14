@@ -410,6 +410,129 @@
   }
   footer .logo{ justify-content:center; margin-bottom:12px; }
 
+  /* ── Poster Cards (#apply) ── */
+  .poster-grid{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 32px;
+    margin-top: 8px;
+  }
+  .poster-card{
+    position: relative;
+    background: var(--surface);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform .25s, box-shadow .25s, border-color .25s;
+    box-shadow: 0 4px 32px rgba(0,0,0,0.3);
+  }
+  .poster-card:hover{
+    transform: translateY(-6px);
+    border-color: var(--green);
+    box-shadow: 0 16px 48px rgba(0,0,0,0.45), 0 0 0 1px rgba(159,232,112,0.2);
+  }
+  .poster-badge{
+    position: absolute;
+    top: 16px; right: 16px;
+    background: var(--green);
+    color: #000;
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 999px;
+    z-index: 2;
+  }
+  .poster-img-wrap{
+    width: 100%;
+    aspect-ratio: 16/9;
+    background: linear-gradient(135deg, #0d1117, #161b22);
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .poster-img{
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform .4s ease;
+  }
+  .poster-card:hover .poster-img{ transform: scale(1.04); }
+  .poster-body{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 28px 28px 24px;
+    flex: 1;
+  }
+  .poster-eyebrow{
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .poster-title{
+    font-size: clamp(22px, 3vw, 30px);
+    font-weight: 800;
+    line-height: 1.15;
+    margin: 0;
+  }
+  .poster-desc{
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.65;
+    margin: 0;
+  }
+  .poster-footer{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    margin-top: auto;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    flex-wrap: wrap;
+  }
+  .poster-qr-wrap{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  .poster-qr{
+    width: 76px; height: 76px;
+    border-radius: 10px;
+    background: #fff;
+    padding: 4px;
+    object-fit: contain;
+    display: block;
+  }
+  .poster-qr-label{
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    text-align: center;
+  }
+  .poster-btn{
+    flex: 1;
+    min-width: 180px;
+    justify-content: center;
+    text-align: center;
+    font-size: 13px;
+  }
+  @media(max-width:480px){
+    .poster-footer{ flex-direction: column; align-items: stretch; }
+    .poster-qr-wrap{ flex-direction: row; gap: 12px; }
+    .poster-btn{ text-align: center; }
+  }
+
   /* Apply form (#apply) */
   .apply-card{
     background: var(--panel); border:1px solid var(--line); border-radius:12px; padding:32px;
@@ -694,8 +817,8 @@
       <a href="#cofounder">Co-Founder Program</a>
       <a href="#hackathon">Hackathon 2026</a>
       <a href="#cf-dashboard">CF Dashboard</a>
-      <a href="#hack-dashboard">Hackathon Dashboard</a>
-      <a href="#apply">Apply</a>
+      <a href="#hack-dashboard">Hack Dashboard</a>
+      <a href="#apply">Get Involved</a>
       <a href="#contact">Contact</a>
     </div>
   </nav>
@@ -903,7 +1026,7 @@
 <section id="evaluation-points">
   <div class="wrap">
     <div class="eyebrow">scoring — phase 2</div>
-    <h2 class="section-title">Co-Founder Evaluation — Points</h2>
+    <h2 class="section-title">Co-Founder Evaluation — 480 Points</h2>
     <p class="section-sub">12 categories testing every dimension of how you'd run the company. The candidate with the highest total score wins the co-founder position.</p>
 
     <!-- Visual score bars -->
@@ -1351,33 +1474,52 @@
 <section id="apply">
   <div class="wrap">
     <div class="eyebrow">get involved</div>
-    <h2 class="section-title">Apply or register</h2>
-    <p class="section-sub">Tell us which track you're interested in. We'll follow up over WhatsApp or email.</p>
+    <h2 class="section-title">Join the <span style="color:var(--green)">journey</span></h2>
+    <p class="section-sub">Two tracks. One mission. Pick your path and make your mark.</p>
 
-    <form class="apply-card reveal" id="applyForm">
-      <div class="form-row">
-        <label for="track">Track</label>
-        <select id="track" required>
-          <option value="">Select a track</option>
-          <option value="cofounder">Co-Founder Selection Process</option>
-          <option value="hackathon">Hackathon 2026</option>
-        </select>
+    <div class="poster-grid">
+
+      <!-- Hackathon Poster -->
+      <div class="poster-card reveal">
+        <div class="poster-badge">Open Now</div>
+        <div class="poster-img-wrap">
+          <img src="/assets/hackathon.png" alt="Hackathon 2026 Poster" class="poster-img" onerror="this.parentElement.style.background='linear-gradient(135deg,#1a1a2e,#16213e)';this.style.display='none'">
+        </div>
+        <div class="poster-body">
+          <div class="poster-eyebrow">CyphrWeb Presents</div>
+          <h3 class="poster-title">Hackathon <span class="hl">2026</span></h3>
+          <p class="poster-desc">Build something extraordinary in 48 hours. Open to all teams of 1–4. Ship fast, win big.</p>
+          <div class="poster-footer">
+            <div class="poster-qr-wrap">
+              <img src="/assets/hackathonqr.png" alt="Hackathon QR Code" class="poster-qr" onerror="this.style.display='none'">
+              <span class="poster-qr-label">Scan to register</span>
+            </div>
+            <a href="#hackathon" class="btn btn-primary poster-btn">Register for Hackathon →</a>
+          </div>
+        </div>
       </div>
-      <div class="form-row">
-        <label for="name">Full name</label>
-        <input type="text" id="name" placeholder="Your name" required>
+
+      <!-- Co-Founder Poster -->
+      <div class="poster-card reveal">
+        <div class="poster-badge" style="background:var(--violet)">1 Spot Only</div>
+        <div class="poster-img-wrap">
+          <img src="/assets/co-founder.png" alt="Co-Founder Poster" class="poster-img" onerror="this.parentElement.style.background='linear-gradient(135deg,#1a0a2e,#2d1b4e)';this.style.display='none'">
+        </div>
+        <div class="poster-body">
+          <div class="poster-eyebrow">CyphrWeb is Seeking</div>
+          <h3 class="poster-title">Co-Founder <span style="color:var(--violet)">Role</span></h3>
+          <p class="poster-desc">Not a job. Not an internship. A chance to help build CyphrWeb from the ground up as a genuine co-founder.</p>
+          <div class="poster-footer">
+            <div class="poster-qr-wrap">
+              <img src="/assets/co-founderqr.png" alt="Co-Founder QR Code" class="poster-qr" onerror="this.style.display='none'">
+              <span class="poster-qr-label">Scan to apply</span>
+            </div>
+            <a href="#cofounder" class="btn btn-primary poster-btn" style="background:var(--violet);box-shadow:0 0 0 0 rgba(139,92,246,0);" onmouseover="this.style.boxShadow='0 8px 24px rgba(139,92,246,0.35)'" onmouseout="this.style.boxShadow='0 0 0 0 rgba(139,92,246,0)'">Apply as Co-Founder →</a>
+          </div>
+        </div>
       </div>
-      <div class="form-row">
-        <label for="email">Email</label>
-        <input type="email" id="email" placeholder="you@example.com" required>
-      </div>
-      <div class="form-row">
-        <label for="message">A short note about you</label>
-        <textarea id="message" placeholder="Skills, what excites you about CyphrWeb..."></textarea>
-      </div>
-      <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">Submit application</button>
-      <div class="form-msg" id="formMsg">Thanks — your application is ready. We'll be in touch soon.</div>
-    </form>
+
+    </div>
   </div>
 </section>
 
@@ -1526,13 +1668,6 @@
   updateCountdown();
   setInterval(updateCountdown, 1000);
 
-  // ---------- Apply form ----------
-  document.getElementById('applyForm').addEventListener('submit', function(e){
-    e.preventDefault();
-    document.getElementById('formMsg').classList.add('show');
-    this.reset();
-  });
-
   /* ==========================================================
      HACKATHON DASHBOARD — CODE-ONLY DATA MANAGEMENT
      ──────────────────────────────────────────────────────────
@@ -1667,7 +1802,7 @@
     { id: 3, name: "Priya Namdev More",       skills: ["Web Development"], experience: "", college: "Nutan Maharashtra Institute of Engineering and Technology (S.E Computer Engineering)", role: "Co-Founder", score: 0, status: "shortlisted" },
     { id: 4, name: "Pranav Kishan Shinde",    skills: ["AI / Machine Learning"], experience: "", college: "NMIET 2nd Year 4th Sem", role: "Co-Founder", score: 0, status: "shortlisted" },
     { id: 5, name: "Manasi Bhupesh Kulkarni", skills: ["Web Development", "Sales & Marketing"], experience: "", college: "NMIET Information Technology Second Year", role: "Co-Founder", score: 0, status: "shortlisted" },
-    { id: 6, name: "Rajashree Kinge",         skills: ["Web Development", "Sales & Marketing", "Business Strategy & Product Planning"], experience: "-", college: "NMIET ENTC 2", role: "Co-Founder", score: 0, status: "shortlisted" },
+    { id: 6, name: "Rajashree Kinge",         skills: ["Web Development", "Sales & Marketing", "Business Strategy & Product Planning"], experience: "I work on creating business ideas, planning products, solving real-world problems, and developing strategies to grow a startup.", college: "NMIET ENTC 2", role: "Co-Founder", score: 0, status: "shortlisted" },
     { id: 7, name: "Shubham Gaikwad",         skills: ["Web Development", "Sales & Marketing"], experience: "", college: "NMIET", role: "Co-Founder", score: 0, status: "shortlisted" },
 
   ]; // ← Add new applicant objects above this line
